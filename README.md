@@ -11,6 +11,7 @@ This custom Incident Timeline aims to -
   - Global or specific filtering inc. Mitre ATT&CK
   - Useful onsite when Lab resources are unavailable
   - Incident details currently based off various SANS methodologies
+  - Contains VBA to populate & update combo boxes 
 
 # Incident Timeline
 Input incident details in here, the worksheet contains data validated and free text fields
