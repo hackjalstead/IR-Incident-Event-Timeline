@@ -1,0 +1,73 @@
+
+'==========================
+Private Sub Worksheet_BeforeDoubleClick _
+  (ByVal Target As Range, _
+    Cancel As Boolean)
+Dim str As String
+Dim cboTemp As OLEObject
+Dim ws As Worksheet
+Set ws = ActiveSheet
+
+Set cboTemp = ws.OLEObjects("TempCombo")
+  On Error Resume Next
+  With cboTemp
+  'clear and hide the combo box
+    .ListFillRange = ""
+    .LinkedCell = ""
+    .Visible = False
+  End With
+On Error GoTo errHandler
+  If Target.Validation.Type = 3 Then
+    'if the cell contains
+      'a data validation list
+    Cancel = True
+    Application.EnableEvents = False
+    'get the data validation formula
+    str = Target.Validation.Formula1
+    str = Right(str, Len(str) - 1)
+    With cboTemp
+      'show the combobox with the list
+      .Visible = True
+      .Left = Target.Left
+      .Top = Target.Top
+      .Width = Target.Width + 5
+      .Height = Target.Height + 5
+      .ListFillRange = str
+      .LinkedCell = Target.Address
+    End With
+    cboTemp.Activate
+    'open the drop down list automatically
+    Me.TempCombo.DropDown
+  End If
+  
+errHandler:
+  Application.EnableEvents = True
+  Exit Sub
+
+End Sub
+'=========================================
+Private Sub TempCombo_LostFocus()
+  With Me.TempCombo
+    .Top = 10
+    .Left = 10
+    .Width = 0
+    .ListFillRange = ""
+    .LinkedCell = ""
+    .Visible = False
+    .Value = ""
+  End With
+End Sub
+
+Private Sub TempCombo_KeyDown(ByVal _
+     KeyCode As MSForms.ReturnInteger, _
+     ByVal Shift As Integer)
+  Select Case KeyCode
+    Case 9 'Tab
+      ActiveCell.Offset(0, 1).Activate
+    Case 13 'Enter
+      ActiveCell.Offset(1, 0).Activate
+    Case Else
+        'do nothing
+  End Select
+End Sub
+'====================================
